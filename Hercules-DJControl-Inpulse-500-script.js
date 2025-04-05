@@ -258,10 +258,12 @@ DJCi500.fxEnabledIndicator = function (_value, group, _control, _status) {
   }
 }
 
-DJCi500.Deck = function (deckNumbers, midiChannel) {
+DJCi500.Deck = function (deckNumbers, midiChannel, altEqMidiChannel) {
   components.Deck.call(this, deckNumbers);
   // Allow components to access deck variables
   var deckData = this;
+
+  this.isAltEqChannelEnabled = altEqMidiChannel != null;
 
   // For loop and looprolls
   var fractions = ['0.125', '0.25', '0.5', '1', '2', '4', '8', '16'];
@@ -443,9 +445,31 @@ DJCi500.Deck = function (deckNumbers, midiChannel) {
     },
   });
 
+
+  var primaryEqDeckNumber = this.currentDeck;
+  if (this.isAltEqChannelEnabled){
+    var altDeckNumber = "[Channel" + deckNumbers[1] + "]";
+    this.altVolume = new components.Pot({
+      midi: [altEqMidiChannel, 0x0A],
+      group: altDeckNumber,
+      inKey: 'volume',
+    });
+
+    this.altEqKnob = [];
+    for (var k = 1; k <= 3; k++) {
+      this.altEqKnob[k] = new components.Pot({
+        midi: [altEqMidiChannel, 0x09 - k],
+        group: '[EqualizerRack1_' + altDeckNumber + '_Effect1]',
+        inKey: 'parameter' + k,
+      });
+    }
+    primaryEqDeckNumber = "[Channel" + deckNumbers[0] + "]";
+  }
+
   // Knobs
   this.volume = new components.Pot({
     midi: [0xB0 + midiChannel, 0x00],
+    group: primaryEqDeckNumber,
     inKey: 'volume',
   });
 
@@ -453,10 +477,11 @@ DJCi500.Deck = function (deckNumbers, midiChannel) {
   for (var k = 1; k <= 3; k++) {
     this.eqKnob[k] = new components.Pot({
       midi: [0xB0 + midiChannel, 0x01 + k],
-      group: '[EqualizerRack1_' + this.currentDeck + '_Effect1]',
+      group: '[EqualizerRack1_' + primaryEqDeckNumber + '_Effect1]',
       inKey: 'parameter' + k,
     });
   }
+
 
   this.gainKnob = new components.Pot({
     midi: [0xB0 + midiChannel, 0x05],
@@ -1119,6 +1144,13 @@ DJCi500.Deck = function (deckNumbers, midiChannel) {
     },
   });
 
+  if (this.isAltEqChannelEnabled) {
+    this.altFilterKnob = new components.Pot({
+      midi: [altEqMidiChannel, 0x09],
+      group: "[QuickEffectRack1_" + deckNumbers[1] + "]"
+    });
+  }
+
   // As per Mixxx wiki, set the group properties
   this.reconnectComponents(function (c) {
     if (c.group === undefined) {
@@ -1126,6 +1158,7 @@ DJCi500.Deck = function (deckNumbers, midiChannel) {
     }
   });
 }
+
 
 // Give the custom Deck all the methods of the generic deck
 DJCi500.Deck.prototype = new components.Deck();
@@ -1233,8 +1266,8 @@ DJCi500.init = function() {
   midi.sendShortMsg(0x90, 0x15, 0x7F);
 
   // Create the deck objects
-  DJCi500.deckA = new DJCi500.Deck([1, 3], 1);
-  DJCi500.deckB = new DJCi500.Deck([2, 4], 2);
+  DJCi500.deckA = new DJCi500.Deck([1, 3], 1, 0xB0);
+  DJCi500.deckB = new DJCi500.Deck([2, 4], 2, null);
   DJCi500.deckA.setCurrentDeck("[Channel1]");
   DJCi500.deckB.setCurrentDeck("[Channel2]");
 

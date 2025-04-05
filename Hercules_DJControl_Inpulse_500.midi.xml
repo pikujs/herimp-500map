@@ -2865,6 +2865,104 @@
           <selectknob/>
         </options>
       </control>
+      <!-- Alt Eq Knobs Channel 1 (M23-27) (0xB0 Deck A - Standard mode)-->
+      <!-- Volume -->
+      <control>
+        <group>[Channel1]</group>
+        <key>DJCi500.deckA.altVolume.inputMSB</key>
+        <description>ALT Volume Deck A</description>
+        <status>0xB0</status>
+        <midino>0x0A</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <control>
+        <group>[Channel1]</group>
+        <key>DJCi500.deckA.altVolume.inputLSB</key>
+        <description>ALT Volume Deck A</description>
+        <status>0xB0</status>
+        <midino>0x2A</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--EQ-->
+      <!-- LOW EQ Knob -->
+      <control>
+        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <key>DJCi500.deckA.altEqKnob[1].inputMSB</key>
+        <description>ALT EQ LOW Deck A</description>
+        <status>0xB0</status>
+        <midino>0x08</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <control>
+        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <key>DJCi500.deckA.altEqKnob[1].inputLSB</key>
+        <description>ALT EQ LOW Deck A</description>
+        <status>0xB0</status>
+        <midino>0x28</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!-- MID EQ Knob -->
+      <control>
+        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <key>DJCi500.deckA.altEqKnob[2].inputMSB</key>
+        <description>ALT EQ MID Deck A</description>
+        <status>0xB0</status>
+        <midino>0x07</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <control>
+        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <key>DJCi500.deckA.altEqKnob[2].inputLSB</key>
+        <description>ALT EQ MID Deck A</description>
+        <status>0xB0</status>
+        <midino>0x27</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!-- HI EQ Knob -->
+      <control>
+        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <key>DJCi500.deckA.altEqKnob[3].inputMSB</key>
+        <description>ALT EQ HIGH Deck A</description>
+        <status>0xB0</status>
+        <midino>0x06</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <control>
+        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <key>DJCi500.deckA.altEqKnob[3].inputLSB</key>
+        <description>ALT EQ HIGH Deck A</description>
+        <status>0xB0</status>
+        <midino>0x26</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--Filter-->
+      <!-- TODO: add LSB support for this filter knob -->
+      <control>
+        <group>[Channel1]</group>
+        <key>DJCi500.deckA.altFilterKnob.input</key>
+        <description>ALT Filter Deck A</description>
+        <status>0xB0</status>
+        <midino>0x09</midino>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
       <!-- CC's MIDI Channel 2 (0xB1 Deck A - Standard mode)-->
       <!-- Volume-->
       <control>
