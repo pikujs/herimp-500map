@@ -2868,7 +2868,7 @@
       <!-- Alt Eq Knobs Channel 1 (M23-27) (0xB0 Deck A - Standard mode)-->
       <!-- Volume -->
       <control>
-        <group>[Channel1]</group>
+        <group>[Channel3]</group>
         <key>DJCi500.deckA.altVolume.inputMSB</key>
         <description>ALT Volume Deck A</description>
         <status>0xB0</status>
@@ -2878,7 +2878,7 @@
         </options>
       </control>
       <control>
-        <group>[Channel1]</group>
+        <group>[Channel3]</group>
         <key>DJCi500.deckA.altVolume.inputLSB</key>
         <description>ALT Volume Deck A</description>
         <status>0xB0</status>
@@ -2890,7 +2890,7 @@
       <!--EQ-->
       <!-- LOW EQ Knob -->
       <control>
-        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <group>[EqualizerRack1_[Channel3]_Effect1]</group>
         <key>DJCi500.deckA.altEqKnob[1].inputMSB</key>
         <description>ALT EQ LOW Deck A</description>
         <status>0xB0</status>
@@ -2900,7 +2900,7 @@
         </options>
       </control>
       <control>
-        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <group>[EqualizerRack1_[Channel3]_Effect1]</group>
         <key>DJCi500.deckA.altEqKnob[1].inputLSB</key>
         <description>ALT EQ LOW Deck A</description>
         <status>0xB0</status>
@@ -2911,7 +2911,7 @@
       </control>
       <!-- MID EQ Knob -->
       <control>
-        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <group>[EqualizerRack1_[Channel3]_Effect1]</group>
         <key>DJCi500.deckA.altEqKnob[2].inputMSB</key>
         <description>ALT EQ MID Deck A</description>
         <status>0xB0</status>
@@ -2921,7 +2921,7 @@
         </options>
       </control>
       <control>
-        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <group>[EqualizerRack1_[Channel3]_Effect1]</group>
         <key>DJCi500.deckA.altEqKnob[2].inputLSB</key>
         <description>ALT EQ MID Deck A</description>
         <status>0xB0</status>
@@ -2932,7 +2932,7 @@
       </control>
       <!-- HI EQ Knob -->
       <control>
-        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <group>[EqualizerRack1_[Channel3]_Effect1]</group>
         <key>DJCi500.deckA.altEqKnob[3].inputMSB</key>
         <description>ALT EQ HIGH Deck A</description>
         <status>0xB0</status>
@@ -2942,7 +2942,7 @@
         </options>
       </control>
       <control>
-        <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+        <group>[EqualizerRack1_[Channel3]_Effect1]</group>
         <key>DJCi500.deckA.altEqKnob[3].inputLSB</key>
         <description>ALT EQ HIGH Deck A</description>
         <status>0xB0</status>
@@ -2954,7 +2954,7 @@
       <!--Filter-->
       <!-- TODO: add LSB support for this filter knob -->
       <control>
-        <group>[Channel1]</group>
+        <group>[Channel3]</group>
         <key>DJCi500.deckA.altFilterKnob.input</key>
         <description>ALT Filter Deck A</description>
         <status>0xB0</status>

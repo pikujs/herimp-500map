@@ -4,7 +4,12 @@
 // ***************************************************************************
 // * Mixxx mapping script file for the Hercules DJControl Inpulse 500.
 // * Authors: Ev3nt1ne, DJ Phatso, resetreboot 
-// *    contributions by Kerrick Staley, Bentheshrubber, ThatOneRuffian
+// *    contributions by Kerrick Staley, Bentheshrubber, ThatOneRuffian, pikujs
+//
+//  Version 3.0: (Mar 2025) pikujs
+// * added support for using Aux/Mic in to contorl third deck EQ and filter and volume
+// * added Effects select Pad Mode
+//
 //
 //  Version 1.6c: (August 2023) resetreboot
 //  * Requires Mixxx >= 2.3.4
@@ -446,30 +451,35 @@ DJCi500.Deck = function (deckNumbers, midiChannel, altEqMidiChannel) {
   });
 
 
-  var primaryEqDeckNumber = this.currentDeck;
   if (this.isAltEqChannelEnabled){
-    var altDeckNumber = "[Channel" + deckNumbers[1] + "]";
     this.altVolume = new components.Pot({
       midi: [altEqMidiChannel, 0x0A],
-      group: altDeckNumber,
+      group: "[Channel" + this.deckNumbers[1] + "]",
       inKey: 'volume',
+      // inSetParameter: function(value) {
+      //   engine.setParameter('[Channel' + this.deckNumbers[1] + ']', 'volume', value);
+      // }
     });
 
     this.altEqKnob = [];
     for (var k = 1; k <= 3; k++) {
+      console.log("creating altEqKnob for k=" + k + " this.decknumbers=" + this.deckNumbers);
       this.altEqKnob[k] = new components.Pot({
         midi: [altEqMidiChannel, 0x09 - k],
-        group: '[EqualizerRack1_' + altDeckNumber + '_Effect1]',
+        group: '[EqualizerRack1_[Channel' + this.deckNumbers[1] + ']_Effect1]',
         inKey: 'parameter' + k,
+        // inSetParameter: function(value) {
+        //     engine.setParameter('[EqualizerRack1_[Channel' + this.deckNumbers[1] + ']_Effect1]', this.inKey, value);
+        // }
       });
     }
-    primaryEqDeckNumber = "[Channel" + deckNumbers[0] + "]";
   }
 
   // Knobs
   this.volume = new components.Pot({
     midi: [0xB0 + midiChannel, 0x00],
-    group: primaryEqDeckNumber,
+    // group: "[Channel" + this.deckNumbers[0] + "]",
+    group: (this.isAltEqChannelEnabled ? ("[Channel" + this.deckNumbers[0] + "]") : this.currentDeck),
     inKey: 'volume',
   });
 
@@ -477,7 +487,8 @@ DJCi500.Deck = function (deckNumbers, midiChannel, altEqMidiChannel) {
   for (var k = 1; k <= 3; k++) {
     this.eqKnob[k] = new components.Pot({
       midi: [0xB0 + midiChannel, 0x01 + k],
-      group: '[EqualizerRack1_' + primaryEqDeckNumber + '_Effect1]',
+      // group: '[EqualizerRack1_[Channel' + this.deckNumbers[0] + ']_Effect1]',
+      group: '[EqualizerRack1_' + (this.isAltEqChannelEnabled ? ("[Channel" + this.deckNumbers[0] + "]") : this.currentDeck) + '_Effect1]',
       inKey: 'parameter' + k,
     });
   }
@@ -1147,7 +1158,7 @@ DJCi500.Deck = function (deckNumbers, midiChannel, altEqMidiChannel) {
   if (this.isAltEqChannelEnabled) {
     this.altFilterKnob = new components.Pot({
       midi: [altEqMidiChannel, 0x09],
-      group: "[QuickEffectRack1_" + deckNumbers[1] + "]"
+      group: "[QuickEffectRack1_[Channel" + this.deckNumbers[1] + "]"
     });
   }
 
@@ -1179,43 +1190,43 @@ DJCi500.init = function() {
   midi.sendShortMsg(0x90, 0x05, 0x10);
 
   // Connect the VUMeters
-  engine.makeConnection("[Channel1]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.getValue("[Channel1]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.makeConnection("[Channel2]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.getValue("[Channel2]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.makeConnection("[Channel3]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.getValue("[Channel3]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.makeConnection("[Channel4]", "VuMeter", DJCi500.vuMeterUpdateDeck);
-  engine.getValue("[Channel4]", "VuMeter", DJCi500.vuMeterUpdateDeck);
+  engine.makeConnection("[Channel1]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.getValue("[Channel1]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.makeConnection("[Channel2]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.getValue("[Channel2]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.makeConnection("[Channel3]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.getValue("[Channel3]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.makeConnection("[Channel4]", "vu_meter", DJCi500.vuMeterUpdateDeck);
+  engine.getValue("[Channel4]", "vu_meter", DJCi500.vuMeterUpdateDeck);
 
   // Deck VU meters peak indicators
-  engine.makeConnection("[Channel1]", "PeakIndicator", DJCi500.vuMeterPeakDeck);
-  engine.makeConnection("[Channel2]", "PeakIndicator", DJCi500.vuMeterPeakDeck);
-  engine.makeConnection("[Channel3]", "PeakIndicator", DJCi500.vuMeterPeakDeck);
-  engine.makeConnection("[Channel4]", "PeakIndicator", DJCi500.vuMeterPeakDeck);
+  engine.makeConnection("[Channel1]", "peak_indicator", DJCi500.vuMeterPeakDeck);
+  engine.makeConnection("[Channel2]", "peak_indicator", DJCi500.vuMeterPeakDeck);
+  engine.makeConnection("[Channel3]", "peak_indicator", DJCi500.vuMeterPeakDeck);
+  engine.makeConnection("[Channel4]", "peak_indicator", DJCi500.vuMeterPeakDeck);
 
   // Connect number leds
   engine.makeConnection("[Channel1]", "play_indicator", DJCi500.numberIndicator);
-  engine.getValue("[Channel1]", "play_indicator", DJCi500.numberIndicator);
+  engine.getValue("[Channel1]", "play_indicator", DJCi500.numberIndicator); // TODO: fix this. third arg for getValue does not exist
   engine.makeConnection("[Channel2]", "play_indicator", DJCi500.numberIndicator);
-  engine.getValue("[Channel2]", "play_indicator", DJCi500.numberIndicator);
+  engine.getValue("[Channel2]", "play_indicator", DJCi500.numberIndicator); // TODO: fix this. third arg for getValue does not exist
   engine.makeConnection("[Channel3]", "play_indicator", DJCi500.numberIndicator);
-  engine.getValue("[Channel3]", "play_indicator", DJCi500.numberIndicator);
+  engine.getValue("[Channel3]", "play_indicator", DJCi500.numberIndicator); // TODO: fix this. third arg for getValue does not exist
   engine.makeConnection("[Channel4]", "play_indicator", DJCi500.numberIndicator);
-  engine.getValue("[Channel4]", "play_indicator", DJCi500.numberIndicator);
+  engine.getValue("[Channel4]", "play_indicator", DJCi500.numberIndicator); // TODO: fix this. third arg for getValue does not exist
 
   // Connect Master VU meter 
-  engine.makeConnection("[Master]", "VuMeterL", DJCi500.vuMeterUpdateMaster);
-  engine.makeConnection("[Master]", "VuMeterR", DJCi500.vuMeterUpdateMaster);
-  engine.makeConnection("[Master]", "PeakIndicatorL", DJCi500.vuMeterPeakLeftMaster);
-  engine.makeConnection("[Master]", "PeakIndicatorR", DJCi500.vuMeterPeakRightMaster);
+  engine.makeConnection("[Main]", "vu_meter_left", DJCi500.vuMeterUpdateMaster);
+  engine.makeConnection("[Main]", "vu_meter_right", DJCi500.vuMeterUpdateMaster);
+  engine.makeConnection("[Main]", "peak_indicator_left", DJCi500.vuMeterPeakLeftMaster);
+  engine.makeConnection("[Main]", "peak_indicator_right", DJCi500.vuMeterPeakRightMaster);
 
 
-  engine.getValue("[Main]", "vu_meter_left", DJCi500.vuMeterUpdateMaster);
-  engine.getValue("[Main]", "vu_meter_right", DJCi500.vuMeterUpdateMaster);
+  engine.getValue("[Main]", "vu_meter_left", DJCi500.vuMeterUpdateMaster); // TODO: fix this. third arg for getValue does not exist
+  engine.getValue("[Main]", "vu_meter_right", DJCi500.vuMeterUpdateMaster); // TODO: fix this. third arg for getValue does not exist
   // engine.getValue("[Master]", "VuMeterL", DJCi500.vuMeterUpdateMaster);
   // engine.getValue("[Master]", "VuMeterR", DJCi500.vuMeterUpdateMaster);
-  engine.getValue("[Controls]", "AutoHotcueColors", "DJCi500.AutoHotcueColors"); // TODO: is this needed?
+  // engine.getValue("[Controls]", "AutoHotcueColors", "DJCi500.AutoHotcueColors"); // TODO: is this needed?
 
   // Connect the FX selection leds
   engine.makeConnection("[EffectRack1_EffectUnit1]", "group_[Channel1]_enable", DJCi500.fxSelIndicator);
@@ -1495,7 +1506,7 @@ DJCi500.tempoLEDs = function () {
 // After a channel change, make sure we read the current status
 DJCi500.updateDeckStatus = function(group) {
   var playing = engine.getValue(group, "play_indicator");
-  var volume = script.absoluteLinInverse(engine.getValue(group, "VuMeter"), 0.0, 1.0, 0, 127);
+  var volume = script.absoluteLinInverse(engine.getValue(group, "vu_meter"), 0.0, 1.0, 0, 127);
 
   // Update the vinyl button
   var vinylState = false;
